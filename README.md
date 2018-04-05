@@ -94,7 +94,7 @@ If you want to disable authentication, you must add the `--no-auth` flag. If thi
 
 NOTE: In older versions of rest-server (up to 0.9.7), this flag does not exist and the server disables authentication if `.htpasswd` is missing or cannot be opened.
 
-By default the server uses HTTP protocol.  This is not very secure since with Basic Authentication, username and passwords will travel in cleartext in every request.  In order to enable TLS support just add the `--tls` argument and add a private and public key at the root of your persistence directory. You may also specify private and public keys by `--tls-cert` and `--tls-key`.
+By default the server uses HTTP protocol.  This is not very secure since with Basic Authentication, username and passwords will travel in cleartext in every request.  In order to enable TLS support just add the `--tls` argument and add a private and public key at the root of your persistence directory (using the filenames `private_key` and `public_key`, respectively). You may also specify private and public key filenames by `--tls-cert` and `--tls-key`.
 
 Signed certificate is required by the restic backend, but if you just want to test the feature you can generate unsigned keys with the following commands:
 
