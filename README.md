@@ -71,6 +71,7 @@ Flags:
       --path string         data directory (default "/tmp/restic")
       --private-repos       users can only access their private repo
       --prometheus          enable Prometheus metrics
+      --serve-acme          serve ACME challenges directory
       --tls                 turn on TLS support
       --tls-cert string     TLS certificate path
       --tls-key string      TLS key path
@@ -102,6 +103,8 @@ Signed certificate is required by the restic backend, but if you just want to te
 openssl genrsa -out private_key 2048
 openssl req -new -x509 -key private_key -out public_key -days 365
 ```
+
+In order to support using certificates from [Let's Encrypt](https://letsencrypt.org/), rest-server can serve an ACME challenge directory over HTTP(S) if you provide the `--serve-acme` argument. This will serve the content of the `.well-known/acme-challenge` directory located under the persistence directory, at the `/.well-known/acme-challenge/` URL path of the server. With this, you can use for example [lego](https://github.com/xenolf/lego)'s `--webroot` option to have lego resolve HTTP-01 challenges for Let's Encrypt through rest-server, useful for example if you do not have the possibility of using Let's Encrypt DNS-01 challenges.
 
 The `--append-only` mode allows creation of new backups but prevents deletion and modification of existing backups. This can be useful when backing up systems that have a potential of being hacked.
 

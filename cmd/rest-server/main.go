@@ -39,6 +39,7 @@ func init() {
 	flags.BoolVar(&restserver.Config.AppendOnly, "append-only", restserver.Config.AppendOnly, "enable append only mode")
 	flags.BoolVar(&restserver.Config.PrivateRepos, "private-repos", restserver.Config.PrivateRepos, "users can only access their private repo")
 	flags.BoolVar(&restserver.Config.Prometheus, "prometheus", restserver.Config.Prometheus, "enable Prometheus metrics")
+	flags.BoolVar(&restserver.Config.ServeAcme, "serve-acme", restserver.Config.ServeAcme, "serve ACME challenges directory")
 	flags.BoolVarP(&restserver.Config.Version, "version", "V", restserver.Config.Version, "output version and exit")
 }
 
@@ -89,6 +90,10 @@ func runRoot(cmd *cobra.Command, args []string) error {
 	log.SetFlags(0)
 
 	log.Printf("Data directory: %s", restserver.Config.Path)
+
+	if restserver.Config.ServeAcme {
+		log.Printf("ACME directory: %s\n", restserver.Config.Path+filepath.FromSlash(restserver.AcmePath))
+	}
 
 	if restserver.Config.CPUProfile != "" {
 		f, err := os.Create(restserver.Config.CPUProfile)

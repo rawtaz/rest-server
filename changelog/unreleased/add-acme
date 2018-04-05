@@ -1,0 +1,6 @@
+Enhancement: Support serving ACME challenge directory, add --serve-acme flag
+
+To support Let's Encrypt HTTP-01 challenge responses being served through rest-
+server, you can now enable the --serve-acme flag. This makes rest-server publish
+the content of a .well-known/acme-challenges directory you place under the data
+direcotry, at the /.well-known/acme-challenge/ URL path.

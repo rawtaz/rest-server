@@ -4,6 +4,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 
 	goji "goji.io"
 
@@ -26,12 +27,15 @@ var Config = struct {
 	PrivateRepos bool
 	Prometheus   bool
 	Debug        bool
+	ServeAcme    bool
 	Version      bool
 }{
 	Path:       "/tmp/restic",
 	Listen:     ":8000",
 	AppendOnly: false,
 }
+
+const AcmePath = "/.well-known/acme-challenge"
 
 func debugHandler(next http.Handler) http.Handler {
 	return http.HandlerFunc(
@@ -64,6 +68,18 @@ func NewMux() *goji.Mux {
 
 	if Config.Prometheus {
 		mux.Handle(pat.Get("/metrics"), promhttp.Handler())
+	}
+
+	if Config.ServeAcme {
+		acmePath := Config.Path + filepath.FromSlash(AcmePath)
+
+		f, err := os.Open(acmePath)
+		if err != nil {
+			log.Fatalf("error: unable to open ACME directory: %v", err)
+		}
+		f.Close()
+
+		mux.Handle(pat.Get(AcmePath+"/*"), http.StripPrefix(AcmePath, http.FileServer(http.Dir(acmePath))))
 	}
 
 	mux.HandleFunc(pat.Head("/config"), CheckConfig)
